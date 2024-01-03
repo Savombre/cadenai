@@ -1,4 +1,3 @@
-from tkinter.filedialog import Open
 from typing import List, Union
 
 from tenacity import retry

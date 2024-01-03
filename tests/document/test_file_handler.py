@@ -1,5 +1,4 @@
 import pytest
-#from cadenai.document.file_handler import DocumentHandler, Loader, PDFHandler
 from cadenai.document.file_handler import DocumentHandler, Loader, PDFHandler
 
 def test_document_handler_initialization():

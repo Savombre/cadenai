@@ -1,4 +1,3 @@
-from IPython import embed
 import pytest
 import openai
 from cadenai.vectorization.embeddings import OpenAIEmbeddings

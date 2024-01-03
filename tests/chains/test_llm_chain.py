@@ -1,4 +1,3 @@
-from httpx import stream
 import pytest
 from cadenai.chains import LLMChain
 from cadenai.llm import ChatOpenAI
