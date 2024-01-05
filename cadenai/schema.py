@@ -66,6 +66,12 @@ class Embeddings(ABC):
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
         pass
 
+class LLM(ABC) : 
+    
+    @abstractmethod
+    def get_completion(self, prompt : List) -> str:
+        pass
+
 class Loader(ABC): 
 
     def load(self) -> List[DocumentHandler] : 

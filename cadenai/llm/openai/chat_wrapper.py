@@ -1,3 +1,5 @@
+from ...schema import LLM
+
 from openai import OpenAI
 import os
 from dotenv import load_dotenv, find_dotenv
@@ -5,7 +7,8 @@ _ = load_dotenv(find_dotenv())
 from typing import List
 from tenacity import retry, wait_exponential
 
-class ChatOpenAI(): 
+
+class ChatOpenAI(LLM): 
 
     def __init__(self,
                 model : str,
