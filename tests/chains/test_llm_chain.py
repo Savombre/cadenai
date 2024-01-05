@@ -1,7 +1,5 @@
 import pytest
 from cadenai.chains import LLMChain
-from cadenai.llm import ChatOpenAI
-from cadenai.prompt_manager.template import BasePromptTemplate
 
 # Fixture pour mock ChatOpenAI
 @pytest.fixture

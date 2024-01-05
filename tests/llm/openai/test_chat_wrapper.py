@@ -1,5 +1,5 @@
 import pytest
-from cadenai.llm import ChatOpenAI
+from cadenai.llm.openai import ChatOpenAI
 
 @pytest.fixture
 def mock_openai_stream(mocker):
