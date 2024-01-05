@@ -1,5 +1,5 @@
 from ..schema import BasePromptTemplate
-from ..llm import ChatOpenAI
+from ..llm.openai import ChatOpenAI
 
 from typing import List
 

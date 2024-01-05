@@ -5,7 +5,7 @@ import re #to use regex
 import json
 
 from ..schema import DocumentHandler, TextSplitter
-from .. import llm
+from ..llm import openai as llm
 from ..prompt_manager.template import ChatPromptTemplate
 from ..prompt_manager.prompt_list import LLMSPLITTER_PROMPT
 from ..chains import LLMChain

@@ -1,7 +1,7 @@
 import json
 
 from . import LLMChain
-from ..llm import ChatOpenAI
+from ..llm.openai import ChatOpenAI
 from ..prompt_manager.template import ChatPromptTemplate
 from ..prompt_manager.prompt_list import RETRIEVAL_PROMPT, RETRIEVAL_PROMPT_WITH_METADATA
 from ..vectorization.vector_db import VectorDB
