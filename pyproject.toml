@@ -15,6 +15,7 @@ pypdf = "^3.17.4"
 qdrant-client = "^1.7.0"
 tenacity = "^8.2.3"
 tiktoken = "^0.5.2"
+mistralai = "^0.0.9"
 
 [tool.poetry.group.dev.dependencies]
 jupyter-client = "^8.6.0"
