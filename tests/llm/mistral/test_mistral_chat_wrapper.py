@@ -26,8 +26,8 @@ def test_get_completion_stream(mock_mistral_stream):
     chat_ai = ChatMistral(model="mistral-tiny")
     chat_ai.client = mock_mistral_stream  # Injectez le mock client
 
-    prompt = [{"role": "user", "content": "Test"}]
-    formatted_prompt = ChatMessage(role="user", content="Test")
+    prompt = [ChatMessage(role="user", content="Test")]
+
     generator = chat_ai.get_completion(prompt, max_tokens=50,stream=True)
 
     # Vérifiez si les tokens sont générés correctement
@@ -38,7 +38,7 @@ def test_get_completion_stream(mock_mistral_stream):
     mock_mistral_stream.chat_stream.assert_called_once_with(
         model="mistral-tiny",
         temperature=0.7,
-        messages=[formatted_prompt],
+        messages=prompt,
         max_tokens=50,
     )
 
@@ -47,8 +47,8 @@ def test_get_completion(mock_mistral):
     chat_ai = ChatMistral(model="mistral-tiny")
     chat_ai.client = mock_mistral  # Injectez le mock client
 
-    prompt = [{"role": "user", "content": "Test"}]
-    formatted_prompt = ChatMessage(role="user", content="Test")
+    prompt = [ChatMessage(role="user", content="Test")]
+
     result = chat_ai.get_completion(prompt, max_tokens=50, stream=False)
 
     # Vérifiez si le résultat correspond à ce qui est attendu
@@ -58,7 +58,7 @@ def test_get_completion(mock_mistral):
     mock_mistral.chat.assert_called_once_with(
         model="mistral-tiny",
         temperature=0.7,
-        messages=[formatted_prompt],
+        messages=prompt,
         max_tokens=50,
     )
 
