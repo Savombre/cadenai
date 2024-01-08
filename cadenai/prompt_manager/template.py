@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from typing import List, Tuple
 from enum import Enum
 import tiktoken
+from mistralai.models.chat_completion import ChatMessage as MistralChatMessage
 
 from ..schema import BasePromptTemplate
 
@@ -17,6 +18,10 @@ class Role(Enum):
     @property
     def openai(self) -> str : 
         return self.value[1]
+    
+    @property
+    def mistral(self) -> str : 
+        return self.value[1]
 
     @classmethod
     def from_role_name(cls, role_name):
@@ -24,6 +29,18 @@ class Role(Enum):
             if role.cadenai == role_name or role.openai == role_name:
                 return role
         raise ValueError(f"Invalid role name: {role_name}")
+
+class PromptSyntax(Enum):
+    CADENAI = ("cadenai","Cadenai","cadenAI","CadenAI")
+    OPENAI = ("openai","Openai","openAI","OpenAI")
+    MISTRAL = ("mistral", "Mistral", "mistralai", "Mistralai","mistralAI","MistralAI")
+
+    @classmethod
+    def from_str(cls, label: str):
+        for item in cls:
+            if label in item.value:
+                return item
+        raise ValueError(f"'{label}' is not a valid PromptFormat")
 
 def token_counter(text,model_type="gpt-4"):
     encoding = tiktoken.encoding_for_model(model_type)
@@ -50,11 +67,15 @@ class MessageTemplate(BaseModel, BasePromptTemplate) :
     role : Role
     content : str
 
-    def format(self, openai_format : bool = False, **kwargs) -> str : 
-        if openai_format : 
-            return {"role" : self.role.openai, "content" : self.content.format(**kwargs)}
-        else :
-            return (self.role.cadenai,self.content.format(**kwargs))
+    def format(self, syntax : str, **kwargs) -> str : 
+        prompt_syntax = PromptSyntax.from_str(syntax)
+        match prompt_syntax : 
+            case prompt_syntax.OPENAI : 
+                return {"role" : self.role.openai, "content" : self.content.format(**kwargs)}
+            case prompt_syntax.MISTRAL :
+                return MistralChatMessage(role=self.role.mistral, content=self.content.format(**kwargs))
+            case prompt_syntax.CADENAI :
+                return (self.role.cadenai,self.content.format(**kwargs))
     
     def __str__(self) -> str:
         return repr((self.role.cadenai,self.content))
@@ -74,10 +95,10 @@ class ChatPromptTemplate(BaseModel,BasePromptTemplate) :
             instance.messages_template.append(MessageTemplate(role=Role.from_role_name(message[0]), content=message[1]))
         return instance
 
-    def format(self, openai_format : bool = False, **kwargs) -> str : 
+    def format(self, syntax : str, **kwargs) -> str : 
         formatted_template = []
         for message_template in self.messages_template :
-            formatted_template.append(message_template.format(openai_format=openai_format,**kwargs))
+            formatted_template.append(message_template.format(syntax=syntax,**kwargs))
         return formatted_template
     
     def add_system_message(self, content : str, input_variables : List[str] = None) : 

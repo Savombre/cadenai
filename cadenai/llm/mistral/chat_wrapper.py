@@ -1,8 +1,7 @@
-from ...schema import LLM
+from ...schema import LLM, BasePromptTemplate
 
 
 from mistralai.client import MistralClient
-from mistralai.models.chat_completion import ChatMessage
 import os
 from dotenv import load_dotenv, find_dotenv
 _ = load_dotenv(find_dotenv())
@@ -21,26 +20,12 @@ class ChatMistral(LLM):
 
     @retry(wait=wait_exponential(multiplier=1, min=2, max=4))
     def get_completion(self, prompt : List, max_tokens : int = 500, stream : bool = False) -> str : 
-
-        new_prompt = self._dirty_prompt_formatting(prompt)
-
+        
         if stream: 
-            return self._get_completion_stream(prompt=new_prompt, max_tokens=max_tokens)
+            return self._get_completion_stream(prompt=prompt, max_tokens=max_tokens)
         
         else: 
-            return self._get_completion_without_stream(prompt=new_prompt, max_tokens=max_tokens) 
-        
-
-    # chat_prompt = [{'role': 'system', 'content': 'You are an evil AI bot. Your name is Minou.'}, {'role': 'user', 'content': 'Hello, how are you doing?'}, {'role': 'assistant', 'content': "I'm doing well, thanks!"}, {'role': 'user', 'content': 'What is your name ?'}]
-    # llm.get_completion(prompt=chat_prompt)
-
-    def _dirty_prompt_formatting(self, prompt : List) -> List:
-
-        new_prompt = []
-        for message in prompt : 
-            new_prompt.append(ChatMessage(role=message["role"],content=message["content"]))
-
-        return new_prompt
+            return self._get_completion_without_stream(prompt=prompt, max_tokens=max_tokens) 
     
     def _get_completion_without_stream(self, prompt : List, max_tokens : int = 2500) -> str:
         completion = self.client.chat(
