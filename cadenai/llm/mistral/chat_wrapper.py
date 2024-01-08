@@ -47,7 +47,7 @@ class ChatMistral(LLM):
         model=self.model,
         temperature = self.temperature,
         messages=prompt,
-        #max_tokens=max_tokens,
+        max_tokens=max_tokens,
         )
 
         return completion.choices[0].message.content
