@@ -1,5 +1,4 @@
 import json
-
 from . import LLMChain
 from ..llm.openai import ChatOpenAI
 from ..prompt_manager.template import ChatPromptTemplate
@@ -22,6 +21,9 @@ class RetrievalChain(LLMChain) :
         self.llm = llm
         self.include_metadata = include_metadata
         llm.temperature = 0
+
+        if not self.llm._prompt_syntax == "openai" : 
+            raise ValueError("Invalid LLM, only works with ChatOpenAI currently")
 
         prompt_template = ChatPromptTemplate.from_messages(
                     input_variables=["identity","language","knowledge","user_input"],
