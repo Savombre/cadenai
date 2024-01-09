@@ -1,4 +1,4 @@
-from ...schema import LLM, PromptSyntax
+from ...schema import LLM
 
 from openai import OpenAI
 import os

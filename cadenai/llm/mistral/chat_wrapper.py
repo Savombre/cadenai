@@ -1,5 +1,4 @@
-from ...schema import LLM, BasePromptTemplate
-
+from ...schema import LLM
 
 from mistralai.client import MistralClient
 import os

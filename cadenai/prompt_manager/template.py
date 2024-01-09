@@ -4,7 +4,7 @@ from enum import Enum
 import tiktoken
 from mistralai.models.chat_completion import ChatMessage as MistralChatMessage
 
-from ..schema import BasePromptTemplate, PromptSyntax
+from ..schema import BasePromptTemplate
 
 class Role(Enum):
     SYSTEM = ("system","system")
