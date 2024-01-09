@@ -20,8 +20,8 @@ class RetrievalChain(LLMChain) :
         self.vector_db = vector_db
         self.llm = llm
         self.include_metadata = include_metadata
-        llm.temperature = 0
-
+        
+        self.llm.temperature = 0
         if not self.llm._prompt_syntax == "openai" : 
             raise ValueError("Invalid LLM, only works with ChatOpenAI currently")
 
