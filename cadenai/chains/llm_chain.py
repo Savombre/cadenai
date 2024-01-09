@@ -1,12 +1,11 @@
-from ..schema import BasePromptTemplate
-from ..llm.openai import ChatOpenAI
+from ..schema import BasePromptTemplate, LLM
 
 from typing import List
 
 class LLMChain():
 
     def __init__(self, 
-                 llm : ChatOpenAI, 
+                 llm : LLM, 
                  prompt_template : BasePromptTemplate,
                  max_tokens : int = 256,
                  ) -> None:
@@ -16,7 +15,7 @@ class LLMChain():
         self.max_tokens = max_tokens
 
     def run(self, stream : bool = False, **kwargs) : 
-        prompt = self.prompt_template.format(**kwargs,openai_format=True)
+        prompt = self.prompt_template.format(syntax=self.llm._prompt_syntax,**kwargs)
         return self.llm.get_completion(prompt=prompt, max_tokens=self.max_tokens, stream=stream)
 
     def multiple_runs(self, input_list : List, stream : bool = False) : 
