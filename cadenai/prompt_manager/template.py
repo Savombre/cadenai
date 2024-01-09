@@ -4,7 +4,7 @@ from enum import Enum
 import tiktoken
 from mistralai.models.chat_completion import ChatMessage as MistralChatMessage
 
-from ..schema import BasePromptTemplate
+from ..schema import BasePromptTemplate, PromptSyntax
 
 class Role(Enum):
     SYSTEM = ("system","system")
@@ -29,18 +29,6 @@ class Role(Enum):
             if role.cadenai == role_name or role.openai == role_name:
                 return role
         raise ValueError(f"Invalid role name: {role_name}")
-
-class PromptSyntax(Enum):
-    CADENAI = ("cadenai","Cadenai","cadenAI","CadenAI")
-    OPENAI = ("openai","Openai","openAI","OpenAI")
-    MISTRAL = ("mistral", "Mistral", "mistralai", "Mistralai","mistralAI","MistralAI")
-
-    @classmethod
-    def from_str(cls, label: str):
-        for item in cls:
-            if label in item.value:
-                return item
-        raise ValueError(f"'{label}' is not a valid PromptFormat")
 
 def token_counter(text,model_type="gpt-4"):
     encoding = tiktoken.encoding_for_model(model_type)
