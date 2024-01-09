@@ -3,7 +3,6 @@ from typing import List, Optional, Dict, Union, Iterator
 from tqdm import tqdm
 from pydantic import BaseModel, Field
 import json
-from enum import Enum
 
 class BasePromptTemplate(ABC) : 
 
@@ -66,18 +65,6 @@ class Embeddings(ABC):
     @abstractmethod
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
         pass
-
-class PromptSyntax(Enum):
-    CADENAI = ("cadenai","Cadenai","cadenAI","CadenAI")
-    OPENAI = ("openai","Openai","openAI","OpenAI")
-    MISTRAL = ("mistral", "Mistral", "mistralai", "Mistralai","mistralAI","MistralAI")
-
-    @classmethod
-    def from_str(cls, label: str):
-        for item in cls:
-            if label in item.value:
-                return item
-        raise ValueError(f"'{label}' is not a valid PromptFormat")
 
 class LLM(ABC) : 
     

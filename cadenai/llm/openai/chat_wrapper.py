@@ -17,7 +17,7 @@ class ChatOpenAI(LLM):
         self.model = model
         self.temperature = temperature
         self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-        self._prompt_syntax = PromptSyntax.OPENAI
+        self._prompt_syntax = "openai"
     
     @retry(wait=wait_exponential(multiplier=1, min=2, max=4))
     def get_completion(self, prompt : List, max_tokens : int = 2500, stream : bool = False) -> str:

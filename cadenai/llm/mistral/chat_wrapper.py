@@ -1,4 +1,4 @@
-from ...schema import LLM, BasePromptTemplate, PromptSyntax
+from ...schema import LLM, BasePromptTemplate
 
 
 from mistralai.client import MistralClient
@@ -17,7 +17,7 @@ class ChatMistral(LLM):
         self.model = model
         self.temperature = temperature #Can't go upper than 1
         self.client = MistralClient(api_key=os.getenv("MISTRAL_API_KEY"))
-        self._prompt_syntax = PromptSyntax.MISTRAL
+        self._prompt_syntax = "mistral"
 
     @retry(wait=wait_exponential(multiplier=1, min=2, max=4))
     def get_completion(self, prompt : List, max_tokens : int = 500, stream : bool = False) -> str : 

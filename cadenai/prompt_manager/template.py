@@ -50,6 +50,19 @@ class PromptTemplate(BaseModel,BasePromptTemplate) :
     def __len__(self) -> str:
         return token_counter(self.template)
     
+class PromptSyntax(Enum):
+    CADENAI = ("cadenai","Cadenai","cadenAI","CadenAI")
+    OPENAI = ("openai","Openai","openAI","OpenAI")
+    MISTRAL = ("mistral", "Mistral", "mistralai", "Mistralai","mistralAI","MistralAI")
+
+    @classmethod
+    def from_str(cls, label: str):
+        for item in cls:
+            if label in item.value:
+                return item
+        raise ValueError(f"'{label}' is not a valid PromptFormat")
+
+    
 class MessageTemplate(BaseModel, BasePromptTemplate) :
 
     role : Role
