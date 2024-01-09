@@ -3,10 +3,13 @@ import json
 
 from cadenai.chains import RetrievalChain
 from cadenai.prompt_manager.prompt_list import RETRIEVAL_PROMPT, RETRIEVAL_PROMPT_WITH_METADATA
+from cadenai.llm.mistral import ChatMistral
 
 @pytest.fixture
 def mock_llm(mocker):
     mock = mocker.MagicMock()
+    #type(mock). _prompt_syntax = mocker.PropertyMock(return_value="openai")
+    mock._prompt_syntax = "openai"
     return mock
 
 @pytest.fixture
@@ -39,13 +42,19 @@ def test_retrieval_chain_init(mock_llm, mock_vector_db):
     assert retrieval_chain.llm is mock_llm
     assert retrieval_chain.include_metadata is False
 
+def test_retrieval_chain_raises_error_with_invalid_llm_using_mistral(mock_vector_db):
+
+    with pytest.raises(ValueError, match="Invalid LLM, only works with ChatOpenAI currently"):
+        RetrievalChain(llm=ChatMistral(model="mistral-tiny"), vector_db=mock_vector_db)
+
 def test_prompt_template_with_metadata(): 
+    mock_llm._prompt_syntax = "openai"
     retrieval_chain_with_metadata = RetrievalChain(llm=mock_llm, vector_db=mock_vector_db, include_metadata=True)
     assert retrieval_chain_with_metadata.prompt_template.messages_template[0].content == RETRIEVAL_PROMPT_WITH_METADATA
 
 
 def test_prompt_template_without_metadata():
-    
+    mock_llm._prompt_syntax = "openai"
     retrieval_chain_without_metadata = RetrievalChain(llm=mock_llm, vector_db=mock_vector_db)
     assert retrieval_chain_without_metadata.prompt_template.messages_template[0].content == RETRIEVAL_PROMPT
 
@@ -98,11 +107,11 @@ def test_retrieval_chain_run_with_metadata(mocker, mock_llm, mock_vector_db):
     user_input = "Quel est la capitale de la France ?"
 
     expected_prompt = retrieval_chain_with_metadata.prompt_template.format(
+        syntax="openai",
         identity=retrieval_chain_with_metadata.identity,
         language=retrieval_chain_with_metadata.language,
         knowledge=retrieval_chain_with_metadata._retrieve_knowledge_from_vector_db(user_input), #First similarity_search call
         user_input=user_input,
-        openai_format=True
     )
 
     result = retrieval_chain_with_metadata.run(user_input=user_input) #Second similarity_search call
@@ -130,11 +139,11 @@ def test_retrieval_chain_run_without_metadata(mock_llm, mock_vector_db):
     user_input = "Quel est la capitale de la France ?"
 
     expected_prompt = retrieval_chain_without_metadata.prompt_template.format(
+        syntax="openai",
         identity=retrieval_chain_without_metadata.identity,
         language=retrieval_chain_without_metadata.language,
         knowledge="\n".join(["fact1", "fact2", "fact3", "fact4", "fact5"]),
-        user_input=user_input,
-        openai_format=True
+        user_input=user_input
     )
 
     result = retrieval_chain_without_metadata.run(user_input=user_input)
@@ -157,11 +166,11 @@ def test_retrieval_chain_run_with_stream(mock_llm, mock_vector_db):
     user_input = "Quel est la capitale de la France ?"
 
     expected_prompt = retrieval_chain_without_metadata.prompt_template.format(
+        syntax="openai",
         identity=retrieval_chain_without_metadata.identity,
         language=retrieval_chain_without_metadata.language,
         knowledge="\n".join(["fact1", "fact2", "fact3", "fact4", "fact5"]),
         user_input=user_input,
-        openai_format=True
     )
 
     result = retrieval_chain_without_metadata.run(user_input=user_input, stream=True)
@@ -194,11 +203,11 @@ def test_retrieval_chain_run_with_stream_and_metadata(mocker, mock_llm, mock_vec
     user_input = "Quel est la capitale de la France ?"
 
     expected_prompt = retrieval_chain_with_metadata.prompt_template.format(
+        syntax="openai",
         identity=retrieval_chain_with_metadata.identity,
         language=retrieval_chain_with_metadata.language,
         knowledge=retrieval_chain_with_metadata._retrieve_knowledge_from_vector_db(user_input), #First similarity_search call
         user_input=user_input,
-        openai_format=True
     )
 
     result = retrieval_chain_with_metadata.run(user_input=user_input, stream=True) #Second similarity_search call
